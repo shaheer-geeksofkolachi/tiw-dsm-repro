@@ -9,6 +9,7 @@ Group: Syed Zain Afaq (36234), Shaheer Ahmed Farooqui (19722), Huzaifa (19193). 
 |---|---|
 | Code (this repo) | https://github.com/shaheer-geeksofkolachi/tiw-dsm-repro |
 | Trained weights (`tiw_dsm.pt`, `dsm_obs.pt`, EMA at 3.51 Mimg) | In this repo: [`checkpoints/deploy/`](https://github.com/shaheer-geeksofkolachi/tiw-dsm-repro/tree/main/checkpoints/deploy). Also in the Kaggle output of tiw-dsm-eval (with `discriminator.pt`): https://www.kaggle.com/code/shaheerfarooqui19722/tiw-dsm-eval/output |
+| Live app (Streamlit Cloud) | https://tiwdsm-cifar10-demo.streamlit.app |
 | Final report (PDF) | `report/main.pdf` |
 
 > **Freeze rule:** the last commit and the cloud files must be dated before **25 Nov 2026, 23:55**.

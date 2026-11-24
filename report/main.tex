@@ -85,6 +85,7 @@
 
 % ---- links (replace before submission) --------------------------------------
 \newcommand{\repoURL}{\url{https://github.com/shaheer-geeksofkolachi/tiw-dsm-repro}}
+\newcommand{\appURL}{\url{https://tiwdsm-cifar10-demo.streamlit.app}}
 \newcommand{\weightsURL}{\url{https://github.com/shaheer-geeksofkolachi/tiw-dsm-repro/tree/main/checkpoints/deploy}}
 
 % ---- experimental numbers ----------------------------------------------------
@@ -129,7 +130,8 @@ Source code (GitHub) & \repoURL \\
 Trained weights & \weightsURL\ \ (\texttt{tiw\_dsm.pt}, \texttt{dsm\_obs.pt}; also in the Kaggle output of \texttt{tiw-dsm-eval}) \\
 Training / evaluation runs & \url{https://www.kaggle.com/code/shaheerfarooqui19722/tiw-dsm-train}, \url{https://www.kaggle.com/code/shaheerfarooqui19722/tiw-dsm-eval} \\
 Run everything & \texttt{README.md} and \texttt{notebooks/run\_on\_kaggle.ipynb} in the repository \\
-Launch the app & \texttt{streamlit run app/streamlit\_app.py} (Section~\ref{sec:deploy}) \\
+Live deployed app & \appURL\ \ (Streamlit Community Cloud, CPU; Section~\ref{sec:deploy}) \\
+Run the app locally & \texttt{streamlit run app/streamlit\_app.py} \\
 LaTeX source & \texttt{report/main.tex}, \texttt{report/references.bib} (bonus; Deliverable 2 was also in \LaTeX) \\
 \bottomrule
 \end{tabularx}
@@ -626,7 +628,10 @@ See Section~\ref{sec:extra}: the sampling budget is a free knob at deployment ti
 \end{figure}
 The app (\texttt{app/streamlit\_app.py}) loads only the EMA weights of the final score network. It has three tabs. \textbf{Generate} takes a seed (any integer, for example one given by the evaluator), a number of images, the solver and the step count, and can run DSM(obs) side by side on the same noise. \textbf{Image-to-image} takes \emph{any} uploaded image, preprocesses it to $32\times32$, adds noise up to a chosen strength and denoises it with the model (SDEdit \cite{meng2022sdedit}). This is a genuinely unseen input for the live demo. \textbf{How it works} explains the pipeline. The sidebar shows the checkpoint's SHA-256, its training objective, size and number of trained images. Together with the optional denoising-trajectory view, this demonstrates that outputs come from the trained model and are not stored images.
 
-\subsection{Dependencies and startup}
+\subsection{Hosting}
+The app is deployed on Streamlit Community Cloud at \appURL. The service clones the GitHub repository, installs the CPU-only dependencies in \texttt{app/requirements.txt} (PyTorch CPU wheels, NumPy, Pillow, Streamlit), loads \texttt{checkpoints/deploy/tiw\_dsm.pt} and \texttt{dsm\_obs.pt} from the repository, and serves the app publicly. Every push to \texttt{main} redeploys it. On the free CPU instance, 16 images at 35 NFE take about 10~s (about 0.6~s per image). The optional VGG13-BN class labels are shown only in local runs, where \texttt{prepare\_data.py} has exported the classifier; the hosted app omits them.
+
+\subsection{Dependencies and local startup}
 \begin{lstlisting}
 pip install -r requirements.txt            # torch, numpy, scipy, pillow, streamlit, ...
 mkdir -p checkpoints/deploy
@@ -668,8 +673,8 @@ On a Kaggle T4, generation at 35 NFE costs \resMsImg{} ms per image in batches o
 \subsection{Application screenshots}
 \begin{figure}[H]
 \centering
-\fig{app_generate.png}{Screenshot 1: ``Generate'' tab with seed, settings, grid, timing and class histogram}
-\caption{Generate tab: TIW-DSM and DSM(obs) side by side from the same seed.}
+\fig{app_generate.png}{Screenshot 1: ``Generate'' tab}
+\caption{Live app (\appURL), Generate tab. Seed 2026, 16 images, Heun 18 steps (35 NFE) on CPU: TIW-DSM and DSM(obs) side by side from the same noise, with wall-clock time and the denoising trajectory of the first image. The sidebar shows the loaded checkpoint (SHA-256 prefix \texttt{1366bae91a89}, objective \texttt{tiw}, 3.51 Mimg).}
 \label{fig:app1}
 \end{figure}
 \begin{figure}[H]
